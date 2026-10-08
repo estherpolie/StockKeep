@@ -1,0 +1,6 @@
+# Every change requests a review from the maintainer.
+*                    @estherpolie
+
+# Storage and business rules are the most sensitive areas.
+/src/StockKeep.Core/ @estherpolie
+/.github/            @estherpolie

@@ -1,0 +1,28 @@
+# Build output
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+publish/
+
+# Visual Studio / Rider / VS Code
+.vs/
+.idea/
+.vscode/
+*.user
+*.suo
+*.userprefs
+
+# Test results
+TestResults/
+*.trx
+coverage*.xml
+
+# Local databases
+*.db
+*.db-shm
+*.db-wal
+
+# OS
+Thumbs.db
+.DS_Store

@@ -1,0 +1,33 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-test:
+    # WinForms needs Windows to build.
+    runs-on: windows-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Set up .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restore
+        run: dotnet restore StockKeep.sln
+
+      - name: Build
+        run: dotnet build StockKeep.sln --configuration Release --no-restore
+
+      - name: Test
+        run: dotnet test StockKeep.sln --configuration Release --no-build --verbosity normal
