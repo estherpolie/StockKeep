@@ -61,12 +61,18 @@ public class SqliteProductRepository : IProductRepository
         using var command = connection.CreateCommand();
         command.CommandText = """
             SELECT * FROM Products
-            WHERE Name LIKE $pattern OR Sku LIKE $pattern
+            WHERE Name LIKE $pattern ESCAPE '\' OR Sku LIKE $pattern ESCAPE '\'
             ORDER BY Name COLLATE NOCASE;
             """;
-        command.Parameters.AddWithValue("$pattern", $"%{term.Trim()}%");
+        command.Parameters.AddWithValue("$pattern", $"%{EscapeLike(term.Trim())}%");
         return ReadAll(command);
     }
+
+    /// <summary>
+    /// Makes % and _ match literally instead of acting as LIKE wildcards.
+    /// </summary>
+    private static string EscapeLike(string value) =>
+        value.Replace("%", "\\%").Replace("_", "\\_");
 
     public Product? GetById(int id)
     {
