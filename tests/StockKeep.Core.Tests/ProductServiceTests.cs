@@ -142,6 +142,18 @@ public sealed class ProductServiceTests : IDisposable
     }
 
     [Fact]
+    public void Search_treats_percent_sign_literally()
+    {
+        _service.Add(NewProduct(sku: "DSC-50", name: "50% Off Sticker"));
+        _service.Add(NewProduct(sku: "DSC-51", name: "500 Labels"));
+
+        var results = _service.List("50%");
+
+        Assert.Single(results);
+        Assert.Equal("50% Off Sticker", results[0].Name);
+    }
+
+    [Fact]
     public void List_is_sorted_by_name()
     {
         _service.Add(NewProduct(sku: "B", name: "banana"));
