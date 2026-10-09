@@ -116,6 +116,16 @@ public class SqliteProductRepository : IProductRepository
         return command.ExecuteNonQuery() == 1;
     }
 
+    public void AdjustQuantity(int id, int delta)
+    {
+        using var connection = Open();
+        using var command = connection.CreateCommand();
+        command.CommandText = "UPDATE Products SET Quantity = Quantity + $delta WHERE Id = $id;";
+        command.Parameters.AddWithValue("$delta", delta);
+        command.Parameters.AddWithValue("$id", id);
+        command.ExecuteNonQuery();
+    }
+
     public bool SkuExists(string sku, int? excludeId = null)
     {
         using var connection = Open();

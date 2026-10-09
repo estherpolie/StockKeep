@@ -142,6 +142,26 @@ public sealed class ProductServiceTests : IDisposable
     }
 
     [Fact]
+    public void AdjustStock_adds_received_items()
+    {
+        var id = _service.Add(NewProduct(quantity: 10));
+
+        _service.AdjustStock(id, 5);
+
+        Assert.Equal(15, _service.Get(id)!.Quantity);
+    }
+
+    [Fact]
+    public void AdjustStock_removes_sold_items()
+    {
+        var id = _service.Add(NewProduct(quantity: 10));
+
+        _service.AdjustStock(id, -4);
+
+        Assert.Equal(6, _service.Get(id)!.Quantity);
+    }
+
+    [Fact]
     public void List_is_sorted_by_name()
     {
         _service.Add(NewProduct(sku: "B", name: "banana"));
