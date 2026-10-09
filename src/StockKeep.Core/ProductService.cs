@@ -37,6 +37,18 @@ public class ProductService
     /// <returns>True if the product existed and was deleted.</returns>
     public bool Delete(int id) => _repository.Delete(id);
 
+    /// <summary>
+    /// Receive stock (positive <paramref name="delta"/>) or sell/remove stock (negative).
+    /// Uses a single UPDATE so concurrent adjustments don't overwrite each other.
+    /// </summary>
+    public void AdjustStock(int id, int delta)
+    {
+        if (delta == 0)
+            return;
+
+        _repository.AdjustQuantity(id, delta);
+    }
+
     public int CountLowStock(IEnumerable<Product> products) => products.Count(p => p.IsLowStock);
 
     private void EnsureValid(Product product, int? excludeId)

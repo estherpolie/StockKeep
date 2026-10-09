@@ -22,6 +22,9 @@ public interface IProductRepository
     /// <returns>True if a row was deleted.</returns>
     bool Delete(int id);
 
+    /// <summary>Adds <paramref name="delta"/> to a product's quantity (negative to remove stock).</summary>
+    void AdjustQuantity(int id, int delta);
+
     /// <summary>True if another product already uses this SKU.</summary>
     /// <param name="excludeId">Ignore this product (used when editing).</param>
     bool SkuExists(string sku, int? excludeId = null);
