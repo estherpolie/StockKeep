@@ -37,6 +37,13 @@ public class ProductService
     /// <returns>True if the product existed and was deleted.</returns>
     public bool Delete(int id) => _repository.Delete(id);
 
+    /// <summary>Products that need reordering, lowest quantity first.</summary>
+    public IReadOnlyList<Product> ListLowStock() =>
+        _repository.GetAll()
+            .Where(p => p.Quantity < p.LowStockThreshold)
+            .OrderBy(p => p.Quantity)
+            .ToList();
+
     public int CountLowStock(IEnumerable<Product> products) => products.Count(p => p.IsLowStock);
 
     private void EnsureValid(Product product, int? excludeId)

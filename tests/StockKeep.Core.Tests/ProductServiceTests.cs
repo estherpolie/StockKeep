@@ -142,6 +142,18 @@ public sealed class ProductServiceTests : IDisposable
     }
 
     [Fact]
+    public void ListLowStock_returns_only_low_items_lowest_first()
+    {
+        _service.Add(NewProduct(sku: "A", name: "Apple", quantity: 2));   // threshold 3 -> low
+        _service.Add(NewProduct(sku: "B", name: "Banana", quantity: 50)); // plenty
+        _service.Add(NewProduct(sku: "C", name: "Cherry", quantity: 0));  // out of stock -> low
+
+        var low = _service.ListLowStock();
+
+        Assert.Equal(new[] { "Cherry", "Apple" }, low.Select(p => p.Name));
+    }
+
+    [Fact]
     public void List_is_sorted_by_name()
     {
         _service.Add(NewProduct(sku: "B", name: "banana"));
