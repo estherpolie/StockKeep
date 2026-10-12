@@ -142,6 +142,41 @@ public sealed class ProductServiceTests : IDisposable
     }
 
     [Fact]
+    public void ListLowStock_returns_only_low_items_lowest_first()
+    {
+        _service.Add(NewProduct(sku: "A", name: "Apple", quantity: 2));   // threshold 3 -> low
+        _service.Add(NewProduct(sku: "B", name: "Banana", quantity: 50)); // plenty
+        _service.Add(NewProduct(sku: "C", name: "Cherry", quantity: 0));  // out of stock -> low
+
+        var low = _service.ListLowStock();
+
+        Assert.Equal(new[] { "Cherry", "Apple" }, low.Select(p => p.Name));
+    }
+
+    [Fact]
+    public void ListLowStock_includes_product_exactly_at_threshold()
+    {
+        _service.Add(NewProduct(sku: "D", name: "Dates", quantity: 3)); // threshold 3 -> at threshold, low
+        _service.Add(NewProduct(sku: "E", name: "Eggs", quantity: 4));  // threshold 3 -> just above, not low
+
+        var low = _service.ListLowStock();
+
+        Assert.Equal(new[] { "Dates" }, low.Select(p => p.Name));
+    }
+
+    [Fact]
+    public void ListLowStock_agrees_with_IsLowStock()
+    {
+        foreach (var (sku, quantity) in new[] { ("Q0", 0), ("Q2", 2), ("Q3", 3), ("Q4", 4), ("Q50", 50) })
+            _service.Add(NewProduct(sku: sku, name: sku, quantity: quantity));
+
+        var expected = _service.List().Where(p => p.IsLowStock).Select(p => p.Sku).OrderBy(s => s);
+        var actual = _service.ListLowStock().Select(p => p.Sku).OrderBy(s => s);
+
+        Assert.Equal(expected, actual);
+    }
+
+    [Fact]
     public void List_is_sorted_by_name()
     {
         _service.Add(NewProduct(sku: "B", name: "banana"));
