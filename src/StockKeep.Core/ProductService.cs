@@ -40,7 +40,7 @@ public class ProductService
     /// <summary>Products that need reordering, lowest quantity first.</summary>
     public IReadOnlyList<Product> ListLowStock() =>
         _repository.GetAll()
-            .Where(p => p.Quantity < p.LowStockThreshold)
+            .Where(p => p.IsLowStock)
             .OrderBy(p => p.Quantity)
             .ToList();
 
